@@ -1,0 +1,8 @@
+build*/
+DerivedData/
+*.xcresult/
+*.log
+xcuserdata/
+.DS_Store
+__pycache__/
+Screenshots/
