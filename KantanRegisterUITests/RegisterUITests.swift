@@ -81,7 +81,9 @@ final class RegisterUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         XCTAssertEqual(app.staticTexts["total"].label, "合計  100円")
         for id in ["minus", "plus", "remove-selected", "clear-cart", "checkout"] {
-            XCTAssertTrue(app.buttons[id].isHittable, "回転後も操作できる: \(id)")
+            let button = app.buttons[id]
+            let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: button)
+            XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 5), .completed, "回転後も操作できる: \(id)")
         }
         app.buttons["checkout"].tap()
         assertConfirmVisible(app)

@@ -44,6 +44,10 @@ struct ContentView: View {
                                 menuButton("日報", detail: "売上集計", symbol: "chart.bar", id: "report")
                                 menuButton("レジ", detail: "会計を開始", symbol: "yensign.circle", id: "register")
                             }
+                            HStack(spacing: 24) {
+                                Link("サポート", destination: URL(string: "https://koshikawa-masato.github.io/kantan-register-ios/support.html")!)
+                                Link("プライバシーポリシー", destination: URL(string: "https://koshikawa-masato.github.io/kantan-register-ios/privacy.html")!)
+                            }.font(.footnote)
                         }.frame(maxWidth: 900)
                             .padding(24).frame(maxWidth: .infinity)
                             .frame(minHeight: geometry.size.height)

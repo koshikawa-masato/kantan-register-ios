@@ -66,4 +66,6 @@ Duoの開閉・折り曲げ全姿勢、Split View、実機での動作は自動�
 ## アイコン
 
 1024pxのオリジナルアイコンをAsset Catalogに収録しています。
-再生成する場合のみPythonとPillowを用意し、`python3 Design/generate_icon.py` を実行します。アプリのビルドにはPythonは不要です。
+原本は `Design/AppIcon.png` です。原本をアプリアイコンとホーム画面のロゴに反映するには、`python3 Design/generate_icon.py` を実行します。アプリのビルドにはPythonは不要です。
+
+2026-10-05、正式版 Xcode 27.0（27A266a）・iPhone 18 Pro Max / iOS 27.0 で単体テスト5件とUIテスト3件が成功しました。回転時のUIテストはレイアウトの更新を最大5秒待って操作可能性を確認します。
