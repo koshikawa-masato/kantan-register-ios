@@ -5,6 +5,12 @@ iOS / iPadOS 17以降。オフラインで動作し、広告・ログイン・�
 
 <img src="KantanRegister/Assets.xcassets/AppIcon.appiconset/AppIcon.png" width="128" alt="かんたんレジのアイコン">
 
+<a href="https://apps.apple.com/jp/app/id6819139835">
+  <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ja-jp?size=250x83" alt="App Storeからダウンロード" height="55">
+</a>
+
+日本のApp Storeで無料配信中です。
+
 ## 起動
 
 1. `KantanRegister.xcodeproj` をXcodeで開きます。
