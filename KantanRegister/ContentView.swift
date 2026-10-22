@@ -88,12 +88,44 @@ struct RegisterView: View {
             let spacious = geometry.size.width >= 600
             let inset: CGFloat = spacious ? 20 : 12
             let short = geometry.size.height < 450
-            let productColumns = geometry.size.width >= 900 ? 4 : spacious ? 3 : 2
-            VStack(spacing: short ? 6 : 10) {
-                customerDisplay(spacious: spacious)
-                    .frame(height: max(64, (geometry.size.height - inset * 2) * (short ? 0.28 : 0.40)))
-                    .rotationEffect(.degrees(180))
-                Rectangle().fill(RegisterTheme.ink).frame(height: 2)
+            let sideBySide = geometry.size.width >= 600 && geometry.size.height >= 450 && geometry.size.width > geometry.size.height
+            if sideBySide {
+                let panelWidth = (geometry.size.width - inset * 2 - 12) / 2
+                let panelHeight = geometry.size.height - inset * 2
+                HStack(spacing: 5) {
+                    customerDisplay(spacious: panelHeight >= 600)
+                        .frame(width: panelHeight, height: panelWidth)
+                        .rotationEffect(.degrees(90))
+                        .frame(width: panelWidth, height: panelHeight)
+                        .clipped()
+                    Rectangle().fill(RegisterTheme.ink).frame(width: 2)
+                    operatorDisplay(spacious: panelHeight >= 600, productColumns: 2)
+                        .frame(width: panelHeight, height: panelWidth)
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: panelWidth, height: panelHeight)
+                        .clipped()
+                }.padding(inset)
+            } else {
+                VStack(spacing: short ? 6 : 10) {
+                    customerDisplay(spacious: spacious)
+                        .frame(height: max(64, (geometry.size.height - inset * 2) * (short ? 0.28 : 0.40)))
+                        .rotationEffect(.degrees(180))
+                    Rectangle().fill(RegisterTheme.ink).frame(height: 2)
+                    operatorDisplay(spacious: spacious, productColumns: spacious ? 3 : 2)
+                }.padding(inset)
+            }
+        }.background(.white)
+        .sheet(item: $paymentMode) { mode in PaymentView(confirming: mode == .checkout) { completed = true }.id(mode.id) }
+        .alert("全ての商品を取り消しますか？", isPresented: $showClear) {
+            Button("取消", role: .destructive) { store.clear() }; Button("戻る", role: .cancel) {}
+        }
+        .alert("会計途中で終了しますか？", isPresented: $showExit) {
+            Button("商品を取り消して終了", role: .destructive) { store.clear(); onExit() }; Button("戻る", role: .cancel) {}
+        }
+        .alert("会計を記録しました", isPresented: $completed) { Button("次の会計", role: .cancel) {} }
+    }
+    private func operatorDisplay(spacious: Bool, productColumns: Int) -> some View {
+        VStack(spacing: 8) {
                 HStack(spacing: 8) {
                     Button("終了") { if store.cart.isEmpty { onExit() } else { showExit = true } }
                         .accessibilityIdentifier("exit-register")
@@ -122,16 +154,7 @@ struct RegisterView: View {
                     } else { Text("商品を選択してください").foregroundStyle(.secondary) }
                     HStack(spacing: 6) { cartControls(spacious: spacious) }
                 }.font(.system(size: spacious ? 18 : 15))
-            }.padding(inset)
-        }.background(.white)
-        .sheet(item: $paymentMode) { mode in PaymentView(confirming: mode == .checkout) { completed = true }.id(mode.id) }
-        .alert("全ての商品を取り消しますか？", isPresented: $showClear) {
-            Button("取消", role: .destructive) { store.clear() }; Button("戻る", role: .cancel) {}
         }
-        .alert("会計途中で終了しますか？", isPresented: $showExit) {
-            Button("商品を取り消して終了", role: .destructive) { store.clear(); onExit() }; Button("戻る", role: .cancel) {}
-        }
-        .alert("会計を記録しました", isPresented: $completed) { Button("次の会計", role: .cancel) {} }
     }
     @ViewBuilder private func cartControls(spacious: Bool) -> some View {
         Group {
