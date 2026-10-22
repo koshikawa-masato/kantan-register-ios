@@ -88,6 +88,7 @@ struct RegisterView: View {
             let spacious = geometry.size.width >= 600
             let inset: CGFloat = spacious ? 20 : 12
             let short = geometry.size.height < 450
+            let productColumns = geometry.size.width >= 900 ? 4 : spacious ? 3 : 2
             VStack(spacing: short ? 6 : 10) {
                 customerDisplay(spacious: spacious)
                     .frame(height: max(64, (geometry.size.height - inset * 2) * (short ? 0.28 : 0.40)))
@@ -102,7 +103,7 @@ struct RegisterView: View {
                     Button("釣り銭計算") { paymentMode = .calculation }.disabled(store.cart.isEmpty)
                 }.font(.system(size: spacious ? 18 : 15, weight: .medium)).buttonStyle(.bordered)
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: productColumns), spacing: 8) {
                         ForEach(store.products) { product in
                             Button { store.add(product) } label: {
                                 VStack(alignment: .leading, spacing: 4) {

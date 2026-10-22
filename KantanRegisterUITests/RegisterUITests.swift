@@ -70,6 +70,30 @@ final class RegisterUITests: XCTestCase {
         assertConfirmVisible(app)
     }
 
+    func testPaymentAmountSurvivesRotation() {
+        let app = XCUIApplication()
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launchArguments = ["--uitesting"]
+        app.launch()
+        app.buttons["register"].tap()
+        app.buttons["product-アイテム1"].tap()
+        app.buttons["checkout"].tap()
+        assertConfirmVisible(app)
+        app.buttons["key-2"].tap()
+        app.buttons["key-00"].tap()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let confirm = app.buttons["confirm-payment"]
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: confirm)
+        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 5), .completed)
+        assertConfirmVisible(app)
+        XCTAssertEqual(app.staticTexts["received"].label, "200円")
+        XCTAssertEqual(app.staticTexts["change"].label, "釣り銭  100円")
+        app.buttons["confirm-payment"].tap()
+        app.buttons["次の会計"].tap()
+        XCTAssertEqual(app.staticTexts["total"].label, "合計  0円")
+    }
+
     func testRotationKeepsCartAndPaymentVisible() {
         let app = XCUIApplication()
         XCUIDevice.shared.orientation = .portrait
